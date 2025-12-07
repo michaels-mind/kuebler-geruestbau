@@ -1,65 +1,602 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 
 export default function Home() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("alle");
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      project: formData.get("project"),
+      message: formData.get("message"),
+      privacyConsent: formData.get("privacy-consent") === "on",
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setSuccessMessage("Vielen Dank! Ihre Anfrage wurde erfolgreich versendet.");
+        e.currentTarget.reset();
+        setTimeout(() => setSuccessMessage(""), 5000);
+      } else {
+        alert("Fehler beim Senden der Anfrage");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Fehler beim Senden der Anfrage");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const galleryImages = [
+    { id: 1, title: "Wohnkomplex Bremen", region: "Bremen", src: "/images/scaffolding-residential-project.webp" },
+    { id: 2, title: "Industrieanlage Hannover", region: "Hannover", src: "/images/scaffolding-industrial-site.webp" },
+    { id: 3, title: "Fassadenerneuerung Nienburg", region: "Nienburg", src: "/images/scaffolding-facade-renovation.webp" },
+    { id: 4, title: "Hochbauprojekt Hildesheim", region: "Hildesheim", src: "/images/scaffolding-bridge-project.webp" },
+    { id: 5, title: "Sanierung Hamburg", region: "Hamburg", src: "/images/scaffolding-church-renovation.webp" },
+    { id: 6, title: "Umbau Osnabrück", region: "Osnabrück", src: "/images/scaffolding-urban-development.webp" },
+  ];
+
+  const regions = ["Nienburg", "Hannover", "Bremen", "Hildesheim", "Hamburg", "Osnabrück"];
+  const filteredGallery =
+    selectedRegion === "alle"
+      ? galleryImages
+      : galleryImages.filter((img) => img.region === selectedRegion);
+
+  const faqs = [
+    {
+      question: "Wie lange dauert die Montage eines Gerüsts?",
+      answer:
+        "Die Montagezeit hängt von Größe und Komplexität ab. Ein Standard-Gerüst dauert meist 1–3 Tage. Wir informieren Sie vor Projektstart über den genauen Zeitplan.",
+    },
+    {
+      question: "Bietet Kübler Gerüstbau auch Demontage an?",
+      answer:
+        "Ja, wir bieten vollständige Demontage und sachgerechte Entsorgung an. Das ist in unseren meisten Paketen bereits enthalten.",
+    },
+    {
+      question: "Sind die Gerüste versichert?",
+      answer:
+        "Ja, alle unsere Gerüste sind TÜV-geprüft und vollständig versichert. Wir stellen Ihnen gerne Zertifikate aus.",
+    },
+    {
+      question: "Können Sie auch Notfall-Einsätze übernehmen?",
+      answer:
+        "Selbstverständlich! Wir bieten 24/7 Notfall-Service an. Rufen Sie uns einfach an oder nutzen Sie die Schnell-Anfrage.",
+    },
+    {
+      question: "Welche Sicherheitsstandards erfüllen Ihre Gerüste?",
+      answer:
+        "Wir erfüllen alle gängigen DIN-, EN- und TÜV-Normen. Regelmäßige Inspektionen und Wartungen gewährleisten maximale Sicherheit.",
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-white">
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white font-bold text-lg">K</span>
+            </div>
+            <div>
+              <div className="text-xl font-bold text-gray-900">Kübler</div>
+              <div className="text-xs text-gray-600 font-medium">Gerüstbau</div>
+            </div>
+          </div>
+          <nav className="hidden md:flex gap-12">
+            <a href="#services" className="text-gray-900 hover:text-orange-600 transition duration-300 font-semibold">
+              Leistungen
+            </a>
+            <a href="#gallery" className="text-gray-900 hover:text-orange-600 transition duration-300 font-semibold">
+              Projekte
+            </a>
+            <a href="#about" className="text-gray-900 hover:text-orange-600 transition duration-300 font-semibold">
+              Über Uns
+            </a>
+            <a href="#faq" className="text-gray-900 hover:text-orange-600 transition duration-300 font-semibold">
+              FAQ
+            </a>
+            <a href="#contact" className="text-gray-900 hover:text-orange-600 transition duration-300 font-semibold">
+              Kontakt
+            </a>
+          </nav>
+          <a
+            href="https://wa.me/491234567890?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-lg font-semibold transition duration-300"
+          >
+            <span>💬</span> WhatsApp
+          </a>
+        </div>
+      </header>
+
+      {/* HERO – KORRIGIERT: Bild endet bündig mit unterem Rand */}
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-28 md:py-36 pb-0 relative overflow-hidden min-h-screen">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-orange-600 rounded-full blur-3xl"></div>
+        </div>
+        <div className="absolute right-0 bottom-0 w-[50vw] h-full pointer-events-none opacity-100 hidden lg:block">
+          <Image
+            src="/hero-scaffolding.svg"
+            alt="Arbeiter auf einem Gerüst vor Himmelkulisse"
+            fill
+            className="object-contain object-right-bottom drop-shadow-2xl"
+            priority
+          />
+        </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-block mb-4 px-4 py-2 bg-orange-600/20 border border-orange-600/40 rounded-full">
+                <span className="text-orange-300 text-sm font-semibold">
+                  Über 20 Jahre Erfahrung im Gerüstbau
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                Sichere Gerüstlösungen
+                <span className="block text-orange-500">für Nienburg & Umgebung</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-xl">
+                Planung, Montage und Wartung von Stahlgerüsten für Wohn-, Industrie- und Sonderbauten – termingerecht und nach höchsten Sicherheitsstandards.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href="#contact"
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-7 py-3.5 rounded-lg font-semibold transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-orange-600/30"
+                >
+                  Jetzt Angebot anfordern
+                </a>
+                <a
+                  href="https://wa.me/491234567890?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border-2 border-orange-600 text-white hover:bg-orange-600/10 px-7 py-3.5 rounded-lg font-semibold transition duration-300 flex items-center gap-2"
+                >
+                  <span>💬</span>
+                  WhatsApp Anfrage
+                </a>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-4 text-sm text-gray-400">
+                <span>✓ TÜV-geprüfte Systeme</span>
+                <span>✓ Schnelle Ausführung</span>
+                <span>✓ 24/7 Notfall-Service</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* LEISTUNGEN */}
+      <section id="services" className="max-w-7xl mx-auto px-6 py-24">
+        <div className="mb-16">
+          <h2 className="text-5xl font-bold text-gray-900 mb-4">Unsere Leistungen</h2>
+          <p className="text-xl text-gray-600 max-w-2xl">
+            Professionelle Gerüstlösungen für jeden Projekttyp und jede Anforderung
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            {
+              icon: "🏗️",
+              title: "Stahlgerüste",
+              desc: "Robust und zuverlässig nach höchsten Sicherheitsstandards für alle Baustellen",
+              points: ["TÜV-zertifiziert", "Individuelle Größen", "Schnelle Lieferung"],
+            },
+            {
+              icon: "👷",
+              title: "Montage & Demontage",
+              desc: "Professionelle Installation durch geschultes Fachpersonal",
+              points: ["Erfahrenes Team", "24/7 Verfügbar", "Versichert"],
+            },
+            {
+              icon: "🔧",
+              title: "Wartung & Inspektion",
+              desc: "Regelmäßige Kontrollen für maximale Sicherheit und Langlebigkeit",
+              points: ["Sicherheitschecks", "Dokumentation", "Reparaturen"],
+            },
+            {
+              icon: "📋",
+              title: "Beratung & Planung",
+              desc: "Individuelle Konzepte maßgeschneidert für Ihre Anforderungen",
+              points: ["Kostenlos", "Unverbindlich", "Schnelle Lösungen"],
+            },
+          ].map((service, i) => (
+            <div
+              key={i}
+              className="bg-white border border-gray-200 rounded-xl p-8 hover:border-orange-600 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group"
+            >
+              <div className="text-5xl mb-6 group-hover:scale-110 transition duration-300">
+                {service.icon}
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition duration-300">
+                {service.title}
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed mb-6">{service.desc}</p>
+              <ul className="space-y-2">
+                {service.points.map((point, j) => (
+                  <li key={j} className="flex items-center gap-2 text-sm text-gray-700">
+                    <span className="w-2 h-2 bg-orange-600 rounded-full" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-      </main>
+      </section>
+
+      {/* GALERIE */}
+      <section id="gallery" className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Projektgalerie</h2>
+            <p className="text-xl text-gray-600">Erfolgreiche Gerüstlösungen in Ihrer Region</p>
+          </div>
+
+          <div className="flex flex-wrap gap-3 mb-12">
+            <button
+              onClick={() => setSelectedRegion("alle")}
+              className={`px-6 py-2 rounded-lg font-semibold transition duration-300 ${
+                selectedRegion === "alle"
+                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/30"
+                  : "bg-white border border-gray-300 text-gray-900 hover:border-orange-600"
+              }`}
+            >
+              Alle Regionen
+            </button>
+            {regions.map((region) => (
+              <button
+                key={region}
+                onClick={() => setSelectedRegion(region)}
+                className={`px-6 py-2 rounded-lg font-semibold transition duration-300 ${
+                  selectedRegion === region
+                    ? "bg-orange-600 text-white shadow-lg shadow-orange-600/30"
+                    : "bg-white border border-gray-300 text-gray-900 hover:border-orange-600"
+                }`}
+              >
+                {region}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredGallery.map((image) => (
+              <div key={image.id} className="group cursor-pointer overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                <div className="relative aspect-video bg-gray-200 overflow-hidden">
+                  <Image
+                    src={image.src}
+                    alt={image.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end">
+                    <div className="p-6 text-white w-full">
+                      <h3 className="text-xl font-bold mb-2">{image.title}</h3>
+                      <p className="text-sm text-gray-300">{image.region}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-block mb-4 px-4 py-2 bg-orange-100 border border-orange-300 rounded-full">
+                <span className="text-orange-900 text-sm font-semibold">Über unser Unternehmen</span>
+              </div>
+              <h2 className="text-5xl font-bold text-gray-900 mb-8 leading-tight">
+                Ihr zuverlässiger Partner für Gerüstlösungen
+              </h2>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                Mit über 20 Jahren Erfahrung in der Gerüstbranche verstehen wir die besonderen Anforderungen von Bauprojekten. Wir bieten nicht nur Produkte, sondern maßgeschneiderte Lösungen für jeden Einsatzfall.
+              </p>
+              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+                Unser Team von zertifizierten Fachleuten sorgt für höchste Sicherheitsstandards, Qualität und pünktliche Lieferung bei jedem Projekt.
+              </p>
+              <a
+                href="#contact"
+                className="inline-block bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300 shadow-lg hover:shadow-orange-600/30"
+              >
+                Kostenlose Beratung
+              </a>
+            </div>
+
+            <div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-8">Warum Kübler Gerüstbau?</h3>
+              <div className="space-y-4">
+                {[
+                  { title: "Zertifizierte Fachleute", desc: "Mit umfassender Erfahrung und aktuellen Schulungen" },
+                  { title: "Moderne Ausrüstung", desc: "Nach neuesten Sicherheitsstandards und Normen" },
+                  { title: "Pünktliche Lieferung", desc: "Professionelle Montage und Demontage" },
+                  { title: "Sichere Systeme", desc: "Mit regelmäßigen Inspektionen und TÜV-Zertifikaten" },
+                  { title: "Flexible Lösungen", desc: "Für alle Anforderungen und Projektgrößen" },
+                  { title: "Kompetente Beratung", desc: "Von der Planung bis zur Demontage" },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:border-orange-600 hover:bg-orange-50/50 transition-all duration-300"
+                  >
+                    <div className="flex-shrink-0">
+                      <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-orange-600">
+                        <svg
+                          className="h-5 w-5 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">{item.title}</h4>
+                      <p className="text-sm text-gray-600">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="bg-gray-50 py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">Häufig gestellte Fragen</h2>
+            <p className="text-xl text-gray-600">Antworten zu den wichtigsten Themen</p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div
+                key={i}
+                className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-600 transition-all duration-300"
+              >
+                <button
+                  onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
+                  className="w-full px-8 py-6 flex justify-between items-center hover:bg-orange-50/50 transition duration-300"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900 text-left">{faq.question}</h3>
+                  <span
+                    className={`text-orange-600 text-2xl transition duration-300 font-light ${
+                      expandedFaq === i ? "rotate-45" : ""
+                    }`}
+                  >
+                    +
+                  </span>
+                </button>
+                {expandedFaq === i && (
+                  <div className="px-8 py-6 bg-orange-50/50 border-t border-gray-200">
+                    <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* KONTAKT */}
+      <section id="contact" className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-24 border-t-2 border-orange-600">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center mb-16">Kontaktieren Sie Uns</h2>
+          <div className="grid md:grid-cols-2 gap-16">
+            <div className="space-y-8">
+              {[
+                { icon: "📍", title: "Adresse", content: ["Kübler Gerüstbau", "Musterstraße 123", "12345 Musterhausen"] },
+                { icon: "📞", title: "Telefon", content: ["+49 123 456789", "Mo-Fr: 07:00 - 17:00"] },
+                { icon: "✉️", title: "E-Mail", content: ["info@kuebler-geruestbau.de", "Schnelle Antwort garantiert"] },
+                {
+                  icon: "💬",
+                  title: "WhatsApp",
+                  content: [
+                    <a
+                      key="wa"
+                      href="https://wa.me/491234567890"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-400 hover:text-green-300 underline"
+                    >
+                      Jetzt direkt schreiben
+                    </a>,
+                  ],
+                },
+              ].map((item, i) => (
+                <div key={i}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">{item.icon}</span>
+                    <h3 className="text-xl font-bold">{item.title}</h3>
+                  </div>
+                  <div className="pl-12 space-y-1 text-gray-300">
+                    {item.content.map((line, j) => (
+                      <div key={j} className="text-sm">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {successMessage && (
+                <div className="bg-green-600 text-white p-4 rounded-lg text-sm font-medium">
+                  ✓ {successMessage}
+                </div>
+              )}
+              <input
+                type="text"
+                name="name"
+                placeholder="Vollständiger Name"
+                required
+                className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="E-Mail Adresse"
+                required
+                className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300"
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Telefonnummer"
+                required
+                className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300"
+              />
+              <input
+                type="text"
+                name="project"
+                placeholder="Projektart (z.B. Hochbau, Sanierung)"
+                required
+                className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300"
+              />
+              <textarea
+                name="message"
+                placeholder="Ihre Nachricht..."
+                required
+                rows={4}
+                className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300 resize-none"
+              />
+              <label className="flex items-start gap-3 text-gray-300 text-sm">
+                <input type="checkbox" name="privacy-consent" required className="w-5 h-5 mt-1 accent-orange-600" />
+                <span>
+                  Ich akzeptiere die{" "}
+                  <a href="#privacy" className="text-orange-400 hover:text-orange-300 underline">
+                    Datenschutzerklärung
+                  </a>{" "}
+                  und die Verarbeitung meiner Daten
+                </span>
+              </label>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-orange-600/30"
+              >
+                {isSubmitting ? "⏳ Wird gesendet..." : "📧 Anfrage Senden"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-gray-900 border-t border-gray-800 py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-12">
+            <div>
+              <h4 className="font-bold text-white mb-6 flex items-center gap-2">
+                <span>🏢</span> Unternehmen
+              </h4>
+              <ul className="space-y-3 text-gray-400 text-sm">
+                <li>
+                  <a href="#about" className="hover:text-orange-600 transition duration-300">
+                    Über Uns
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" className="hover:text-orange-600 transition duration-300">
+                    Leistungen
+                  </a>
+                </li>
+                <li>
+                  <a href="#gallery" className="hover:text-orange-600 transition duration-300">
+                    Projekte
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" className="hover:text-orange-600 transition duration-300">
+                    Kontakt
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-white mb-6 flex items-center gap-2">
+                <span>⚖️</span> Rechtliches
+              </h4>
+              <ul className="space-y-3 text-gray-400 text-sm">
+                <li>
+                  <a href="#privacy" className="hover:text-orange-600 transition duration-300">
+                    Datenschutz
+                  </a>
+                </li>
+                <li>
+                  <a href="#impressum" className="hover:text-orange-600 transition duration-300">
+                    Impressum
+                  </a>
+                </li>
+                <li>
+                  <a href="#agb" className="hover:text-orange-600 transition duration-300">
+                    AGB
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-white mb-6 flex items-center gap-2">
+                <span>🕐</span> Öffnungszeiten
+              </h4>
+              <ul className="space-y-3 text-gray-400 text-sm">
+                <li>Mo-Fr: 07:00 - 17:00 Uhr</li>
+                <li>Sa: Nach Vereinbarung</li>
+                <li>So: Geschlossen</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-white mb-6 flex items-center gap-2">
+                <span>📱</span> Social & Chat
+              </h4>
+              <div className="flex flex-col gap-3">
+                <a
+                  href="https://wa.me/491234567890"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-400 hover:text-green-300 text-sm underline transition duration-300"
+                >
+                  WhatsApp
+                </a>
+                <a href="tel:+491234567890" className="text-orange-400 hover:text-orange-300 text-sm underline transition duration-300">
+                  Anrufen
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-12 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Kübler Gerüstbau. Alle Rechte vorbehalten. | Entwickelt mit Leidenschaft</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
