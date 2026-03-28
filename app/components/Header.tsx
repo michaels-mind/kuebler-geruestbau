@@ -4,10 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 
 const navLinks = [
-  { href: "#services", label: "Leistungen" },
-  { href: "#gallery", label: "Projekte" },
-  { href: "#about", label: "Über Uns" },
-  { href: "#contact", label: "Kontakt" },
+  { href: "/#services", label: "Leistungen" },
+  { href: "/#gallery", label: "Projekte" },
+  { href: "/#about", label: "Über Uns" },
+  { href: "/#contact", label: "Kontakt" },
 ];
 
 const WhatsAppIcon = ({ className }: { className: string }) => (
@@ -23,8 +23,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
-        {/* Logo */}
-        <a href="#" className="flex items-center">
+        {/* Logo - Verlinkt auf Homepage */}
+        <a href="/" className="flex items-center">
           <Image
             src="/logo_header.svg"
             alt="Kübler Gerüstbau"

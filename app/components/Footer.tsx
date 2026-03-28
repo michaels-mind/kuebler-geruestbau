@@ -27,9 +27,9 @@ export default function Footer() {
 
           {/* Rechtliches */}
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-gray-500">
-            <a href="#privacy" className="hover:text-orange-500 transition duration-300">Datenschutz</a>
-            <a href="#impressum" className="hover:text-orange-500 transition duration-300">Impressum</a>
-            <a href="#agb" className="hover:text-orange-500 transition duration-300">AGB</a>
+            <a href="/privacy" className="hover:text-orange-500 transition duration-300">Datenschutz</a>
+            <a href="/impressum" className="hover:text-orange-500 transition duration-300">Impressum</a>
+            <a href="/agb" className="hover:text-orange-500 transition duration-300">AGB</a>
           </nav>
         </div>
 
