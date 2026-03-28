@@ -50,7 +50,7 @@ export default function Header() {
 
         {/* WhatsApp Button Desktop */}
         <a
-          href="https://wa.me/491234567890?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
+          href="https://wa.me/491784475439?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
           target="_blank"
           rel="noopener noreferrer"
           className="hidden md:flex items-center gap-2 bg-transparent border-2 border-orange-500 hover:bg-orange-500/10 text-gray-900 px-5 py-2.5 rounded-xl font-semibold transition duration-300"
@@ -85,7 +85,7 @@ export default function Header() {
             </a>
           ))}
           <a
-            href="https://wa.me/491234567890"
+            href="https://wa.me/491784475439?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 border-2 border-orange-500 hover:bg-orange-500/10 text-gray-900 px-5 py-2.5 rounded-xl font-semibold transition duration-300 w-fit"

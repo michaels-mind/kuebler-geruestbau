@@ -72,26 +72,47 @@ export default function ContactSection() {
       className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 md:py-24 border-t-2 border-orange-600"
     >
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl md:text-5xl font-bold text-center mb-12 md:mb-16">
-          Kontaktieren Sie Uns
-        </h2>
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            Kontaktieren Sie Uns
+          </h2>
+          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">
+            Bitte senden Sie uns - wenn möglich - ergänzende Unterlagen wie Skizzen, Fotos, Grundrisse, Ansichten oder Schnitte per E-Mail oder WhatsApp.
+          </p>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
           {/* Kontakt-Info */}
           <div className="flex flex-col gap-4">
 
-            {/* Telefon */}
+            {/* Telefon (Mobil) */}
             <a
-              href="tel:+49123456789"
+              href="tel:+491784475439"
               className="flex items-center gap-4 p-5 rounded-xl bg-gray-800/60 border border-gray-700 hover:border-orange-600 hover:bg-gray-800 transition-all duration-300 group"
             >
               <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-orange-600 flex items-center justify-center">
                 <PhoneIcon />
               </div>
               <div>
-                <div className="text-xs text-gray-400 mb-0.5 uppercase tracking-wide">Telefon</div>
+                <div className="text-xs text-gray-400 mb-0.5 uppercase tracking-wide">Mobil</div>
                 <div className="text-white font-bold text-lg group-hover:text-orange-400 transition duration-300">
-                  +49 123 456789
+                  +49 178 4475439
+                </div>
+              </div>
+            </a>
+
+            {/* Festnetz */}
+            <a
+              href="tel:+495021897644"
+              className="flex items-center gap-4 p-5 rounded-xl bg-gray-800/60 border border-gray-700 hover:border-orange-600 hover:bg-gray-800 transition-all duration-300 group"
+            >
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-orange-600 flex items-center justify-center">
+                <PhoneIcon />
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-0.5 uppercase tracking-wide">Festnetz</div>
+                <div className="text-white font-bold text-lg group-hover:text-orange-400 transition duration-300">
+                  05021 897644
                 </div>
               </div>
             </a>
@@ -114,7 +135,7 @@ export default function ContactSection() {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/491234567890?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot."
+              href="https://wa.me/491784475439?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 p-5 rounded-xl bg-gray-800/60 border border-gray-700 hover:border-green-500 hover:bg-gray-800 transition-all duration-300 group"
@@ -140,7 +161,7 @@ export default function ContactSection() {
                   Büro – nur nach Vereinbarung
                 </div>
                 <div className="text-gray-400 text-sm">
-                  Kübler Gerüstbau · Musterstraße 123 · 12345 Musterhausen
+                  Kübler Gerüstbau · Stettiner Straße 34 · 31582 Nienburg/Weser
                 </div>
               </div>
             </div>
@@ -177,13 +198,13 @@ export default function ContactSection() {
             <input
               type="text"
               name="project"
-              placeholder="Projektart (z.B. Hochbau, Sanierung)"
+              placeholder="Projektart (z.B. Malergerüst, Dachdeckergerüst, PV-Anlage usw.)"
               required
               className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300"
             />
             <textarea
               name="message"
-              placeholder="Ihre Nachricht..."
+              placeholder="Kurze Beschreibung Ihres Projekts... (Adresse, gewünschter Zeitraum, Besonderheiten)"
               required
               rows={4}
               className="w-full px-5 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-600/30 transition duration-300 resize-none"

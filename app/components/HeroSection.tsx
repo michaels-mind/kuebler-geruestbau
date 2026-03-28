@@ -39,7 +39,7 @@ export default function HeroSection() {
               Jetzt Angebot anfordern
             </a>
             <a
-              href="https://wa.me/491234567890?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
+              href="https://wa.me/491784475439?text=Hallo%20K%C3%BCbler%20Ger%C3%BCstbau%2C%20ich%20h%C3%A4tte%20gerne%20ein%20Angebot%20f%C3%BCr%20ein%20Ger%C3%BCst."
               target="_blank"
               rel="noopener noreferrer"
               className="border-2 border-orange-600 text-white hover:bg-orange-600/10 px-7 py-3.5 rounded-lg font-semibold transition duration-300 flex items-center gap-2"
