@@ -4,82 +4,74 @@ import { useState } from "react";
 import Image from "next/image";
 
 const galleryImages = [
-  { id: 1, title: "Wohnkomplex Bremen", region: "Bremen", src: "/images/scaffolding-residential-project.webp" },
-  { id: 2, title: "Industrieanlage Hannover", region: "Hannover", src: "/images/scaffolding-industrial-site.webp" },
-  { id: 3, title: "Fassadenerneuerung Nienburg", region: "Nienburg", src: "/images/scaffolding-facade-renovation.webp" },
-  { id: 4, title: "Hochbauprojekt Hildesheim", region: "Hildesheim", src: "/images/scaffolding-bridge-project.webp" },
-  { id: 5, title: "Sanierung Hamburg", region: "Hamburg", src: "/images/scaffolding-church-renovation.webp" },
-  { id: 6, title: "Umbau Osnabrück", region: "Osnabrück", src: "/images/scaffolding-urban-development.webp" },
+  { id: 1, title: "Gerüstbau Projekt 1", src: "/images/geruest_01.webp" },
+  { id: 2, title: "Gerüstbau Projekt 2", src: "/images/geruest_02.webp" },
+  { id: 3, title: "Gerüstbau Projekt 3", src: "/images/geruest_03.webp" },
+  { id: 4, title: "Gerüstbau Projekt 4", src: "/images/geruest_04.webp" },
+  { id: 5, title: "Gerüstbau Projekt 5", src: "/images/geruest_05.webp" },
+  { id: 6, title: "Gerüstbau Projekt 6", src: "/images/geruest_06.webp" },
 ];
 
-const regions = ["Nienburg", "Hannover", "Bremen", "Hildesheim", "Hamburg", "Osnabrück"];
-
 export default function GallerySection() {
-  const [selectedRegion, setSelectedRegion] = useState("alle");
-
-  const filteredGallery =
-    selectedRegion === "alle"
-      ? galleryImages
-      : galleryImages.filter((img) => img.region === selectedRegion);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <section id="gallery" className="bg-white py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-12 md:mb-16">
+        <div className="mb-12 md:mb-16 text-center md:text-left">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">Projektgalerie</h2>
-          <p className="text-lg md:text-xl text-gray-600">Erfolgreiche Gerüstlösungen in Ihrer Region</p>
+          <p className="text-lg md:text-xl text-gray-600">Erfolgreiche Gerüstlösungen für jedes Projekt</p>
         </div>
 
-        <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-12">
-          <button
-            onClick={() => setSelectedRegion("alle")}
-            className={`px-4 md:px-6 py-2 rounded-lg font-semibold transition duration-300 text-sm md:text-base ${
-              selectedRegion === "alle"
-                ? "bg-orange-600 text-white shadow-lg shadow-orange-600/30"
-                : "bg-white border border-gray-300 text-gray-900 hover:border-orange-600"
-            }`}
-          >
-            Alle Regionen
-          </button>
-          {regions.map((region) => (
-            <button
-              key={region}
-              onClick={() => setSelectedRegion(region)}
-              className={`px-4 md:px-6 py-2 rounded-lg font-semibold transition duration-300 text-sm md:text-base ${
-                selectedRegion === region
-                  ? "bg-orange-600 text-white shadow-lg shadow-orange-600/30"
-                  : "bg-white border border-gray-300 text-gray-900 hover:border-orange-600"
-              }`}
-            >
-              {region}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {filteredGallery.map((image) => (
+        {/* Masonry Layout */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 md:gap-8">
+          {galleryImages.map((image) => (
             <div
               key={image.id}
-              className="group cursor-pointer overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300"
+              onClick={() => setSelectedImage(image.src)}
+              className="group cursor-pointer overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 break-inside-avoid mb-6 md:mb-8 bg-gray-200"
             >
-              <div className="relative aspect-video bg-gray-200 overflow-hidden">
-                <Image
-                  src={image.src}
-                  alt={image.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end">
-                  <div className="p-4 md:p-6 text-white w-full">
-                    <h3 className="text-lg md:text-xl font-bold mb-1">{image.title}</h3>
-                    <p className="text-sm text-gray-300">{image.region}</p>
-                  </div>
-                </div>
-              </div>
+              <img
+                src={image.src}
+                alt={image.title}
+                loading="lazy"
+                className="w-full h-auto block group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
           ))}
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 text-white hover:text-orange-500 text-4xl p-2 z-50"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedImage(null);
+            }}
+            aria-label="Schließen"
+          >
+            &times;
+          </button>
+          
+          <div 
+            className="relative w-full h-full max-w-6xl max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedImage}
+              alt="Vergrößerte Ansicht"
+              fill
+              className="object-contain"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

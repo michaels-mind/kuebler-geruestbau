@@ -6,12 +6,12 @@ const services = [
     desc: "Sichere Gerüste für Neubau, Sanierung oder Renovierung von Wohn- und Gewerbegebäuden",
   },
   {
-    title: "Dachfanggerüste",
-    desc: "Schutzgerüst an Dachkanten für maximale Sicherheit bei Arbeiten in der Höhe",
+    title: "Schutzgerüste",
+    desc: "Dienen dem Schutz von Personen und Umgebung vor herabfallenden Teilen und anderen Gefahren",
   },
   {
-    title: "Schutz- & Passantengerüste",
-    desc: "Gerüste, die Arbeiter und Passanten vor herabfallenden Materialien zuverlässig schützen",
+    title: "Treppentürme",
+    desc: "Ermöglichen einen sicheren und komfortablen Zugang zu höheren Arbeitsbereichen",
   },
   {
     title: "Fahr- & Rollgerüste",
@@ -22,7 +22,7 @@ const services = [
     desc: "Robuste Gerüstlösungen für Industrieanlagen, Hallen und komplexe Bauprojekte mit hohen Anforderungen",
   },
   {
-    title: "Sonder- & Modulgerüste",
+    title: "Sondergerüste",
     desc: "Individuell geplante Gerüste für besondere Bauformen oder außergewöhnliche Projekte – maßgeschneidert und sicher",
   },
 ];
