@@ -34,7 +34,10 @@ export default function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
+    // WICHTIG: Referenz zum Formular sichern, bevor await aufgerufen wird
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -53,14 +56,14 @@ export default function ContactSection() {
 
       if (response.ok) {
         setSuccessMessage("Vielen Dank! Ihre Anfrage wurde erfolgreich versendet.");
-        e.currentTarget.reset();
+        form.reset(); // Nutzt die sichere Referenz
         setTimeout(() => setSuccessMessage(""), 5000);
       } else {
-        alert("Fehler beim Senden der Anfrage");
+        alert("Fehler beim Senden der Anfrage (Server-Fehler)");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Fehler beim Senden der Anfrage");
+      alert("Fehler beim Senden der Anfrage (Netzwerk-Fehler)");
     } finally {
       setIsSubmitting(false);
     }
