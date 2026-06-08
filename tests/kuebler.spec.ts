@@ -19,7 +19,6 @@ test.describe('Homepage', () => {
 
   test('CTA-Button "Jetzt Angebot anfordern" verlinkt zu Kontakt', async ({ page }) => {
     await page.goto('/');
-    await page.waitForTimeout(1500);
     const btn = page.locator('a[href="#contact"]').first();
     await expect(btn).toBeVisible();
     await expect(btn).toHaveAttribute('href', '#contact');
@@ -27,9 +26,10 @@ test.describe('Homepage', () => {
 
   test('Keine JS-Konsolenfehler auf der Startseite', async ({ page }) => {
     const errors: string[] = [];
-    page.on('pageerror', err => errors.push(err.message));
+    page.on('pageerror', (err) => errors.push(err.message));
     await page.goto('/');
-    await page.waitForTimeout(1500);
+    // Auf echtes Element warten statt fixem Timeout
+    await expect(page.getByText('Ihr Partner für sichere Gerüstlösungen')).toBeVisible();
     expect(errors).toHaveLength(0);
   });
 });
@@ -38,20 +38,13 @@ test.describe('Homepage', () => {
 test.describe('Navbar', () => {
   test('Logo ist sichtbar und verlinkt auf /', async ({ page }) => {
     await page.goto('/');
-    const logo = page.locator('header a[href="/"] img').first();
-    await expect(logo).toBeVisible();
+    await expect(page.locator('header a[href="/"] img').first()).toBeVisible();
   });
 
   test('Alle Desktop-Navigationslinks sind vorhanden', async ({ page, viewport }) => {
     test.skip((viewport?.width ?? 1280) < 768, 'Nur Desktop');
     await page.goto('/');
-    await page.waitForTimeout(1500);
-    for (const [label, href] of [
-      ['Leistungen', '/#services'],
-      ['Projekte', '/#gallery'],
-      ['Über Uns', '/#about'],
-      ['Kontakt', '/#contact'],
-    ]) {
+    for (const href of ['/#services', '/#gallery', '/#about', '/#contact']) {
       await expect(page.locator(`header a[href="${href}"]`).first()).toBeVisible();
     }
   });
@@ -59,9 +52,7 @@ test.describe('Navbar', () => {
   test('Mobile: Hamburger-Button ist sichtbar', async ({ page, viewport }) => {
     test.skip((viewport?.width ?? 1280) >= 768, 'Nur Mobile');
     await page.goto('/');
-    await page.waitForTimeout(1500);
-    const hamburger = page.getByLabel('Menü öffnen');
-    await expect(hamburger).toBeVisible();
+    await expect(page.getByLabel('Menü öffnen')).toBeVisible();
   });
 });
 
@@ -69,8 +60,7 @@ test.describe('Navbar', () => {
 test.describe('Footer', () => {
   test('Footer-Logo ist sichtbar', async ({ page }) => {
     await page.goto('/');
-    const logo = page.locator('footer img[alt="Kübler Gerüstbau"]');
-    await expect(logo).toBeVisible();
+    await expect(page.locator('footer img[alt="Kübler Gerüstbau"]')).toBeVisible();
   });
 
   test('Footer-Link Impressum ist korrekt', async ({ page }) => {
@@ -132,9 +122,9 @@ test.describe('Rechtliche Seiten', () => {
 
     test(`${name}: Keine JS-Konsolenfehler`, async ({ page }) => {
       const errors: string[] = [];
-      page.on('pageerror', err => errors.push(err.message));
+      page.on('pageerror', (err) => errors.push(err.message));
       await page.goto(path);
-      await page.waitForTimeout(1500);
+      await page.waitForLoadState('load');
       expect(errors).toHaveLength(0);
     });
   }

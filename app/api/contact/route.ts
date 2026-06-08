@@ -1,15 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -85,31 +79,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userAgent = request.headers.get('user-agent') ?? '';
-
-    // 1. Supabase speichern
-    const { error: supabaseError } = await supabaseAdmin
-      .from('contact_submissions')
-      .insert([{
-        name,
-        email,
-        phone,
-        project_type: project,
-        message,
-        privacy_consent: privacyConsent,
-        ip_address: ip,
-        user_agent: userAgent,
-      }]);
-
-    if (supabaseError) {
-      console.error('Supabase error:', supabaseError);
-      return NextResponse.json(
-        { error: 'Fehler beim Speichern. Bitte versuchen Sie es erneut.' },
-        { status: 500 }
-      );
-    }
-
-    // 2. E-Mail via Resend (escaped)
+    // E-Mail via Resend (escaped)
     const { error: resendError } = await resend.emails.send({
       from: 'Kübler Gerüstbau <anfrage@kuebler-geruestbau.de>',
       to: process.env.RECEIVER_EMAIL ?? 'info@kuebler-geruestbau.de',
@@ -130,11 +100,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (resendError) {
-      console.error('Resend error (Daten in Supabase gespeichert):', resendError);
+      console.error('Resend error:', resendError);
+      return NextResponse.json(
+        { error: 'Fehler beim Senden. Bitte versuchen Sie es erneut.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(
-      { success: true, message: 'Anfrage erfolgreich verarbeitet.' },
+      { success: true, message: 'Anfrage erfolgreich versendet.' },
       { status: 201 }
     );
   } catch (error) {
