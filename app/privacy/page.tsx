@@ -57,17 +57,17 @@ export default function PrivacyPage() {
             </ul>
           </section>
 
-          {/* 5. Kontaktformular & Infrastruktur */}
+          {/* 5. Kontaktformular & Versand */}
           <section>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">5. Kontaktformular & Datenspeicherung</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">5. Kontaktformular</h2>
             <p>
-              Wenn Sie uns über das Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben inklusive der von Ihnen angegebenen Kontaktdaten zur Bearbeitung der Anfrage gespeichert.
+              Wenn Sie uns über das Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben inklusive der von Ihnen angegebenen Kontaktdaten zur Bearbeitung der Anfrage verarbeitet. Eine Speicherung in einer Datenbank erfolgt nicht; Ihre Anfrage wird ausschließlich per E-Mail an uns übermittelt.
             </p>
             <p className="mt-4 p-4 bg-orange-50 border-l-4 border-orange-500 italic text-gray-800">
               <strong>Hinweis:</strong> Sie können uns ergänzende Unterlagen wie Skizzen, Bilder, Grundrisse oder Pläne zur besseren Einschätzung Ihres Bauvorhabens übermitteln.
             </p>
             <p className="mt-4">
-              <strong>Technische Umsetzung:</strong> Wir nutzen für unsere Datenbank <strong>Supabase</strong> (Supabase Inc., USA). Mit dem Anbieter wurde ein Auftragsverarbeitungsvertrag geschlossen. Ihre Daten geben wir nicht ohne Ihre Einwilligung weiter.
+              <strong>Technische Umsetzung:</strong> Für den Versand der Formular-Anfragen per E-Mail nutzen wir den Dienst <strong>Resend</strong> (Resend, Inc., USA). Zum Schutz vor Spam wird Ihre IP-Adresse kurzzeitig verarbeitet (Rate-Limiting über <strong>Upstash</strong>). Ihre Daten geben wir nicht ohne Ihre Einwilligung an Dritte weiter.
             </p>
           </section>
 
