@@ -5,11 +5,6 @@ import { Redis } from '@upstash/redis';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(3, '10 m'),
-});
-
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -27,13 +22,23 @@ export async function POST(request: NextRequest) {
   const ip =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
 
-  const { success, reset } = await ratelimit.limit(ip);
-  if (!success) {
-    const retryAfter = Math.ceil((reset - Date.now()) / 1000);
-    return NextResponse.json(
-      { error: 'Zu viele Anfragen. Bitte warten Sie einige Minuten.' },
-      { status: 429, headers: { 'Retry-After': String(retryAfter) } }
-    );
+  // Rate-Limit: bei Upstash-Problemen NICHT blockieren (fail-open),
+  // damit ein Ausfall niemals das Formular lahmlegt.
+  try {
+    const ratelimit = new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(3, '10 m'),
+    });
+    const { success, reset } = await ratelimit.limit(ip);
+    if (!success) {
+      const retryAfter = Math.ceil((reset - Date.now()) / 1000);
+      return NextResponse.json(
+        { error: 'Zu viele Anfragen. Bitte warten Sie einige Minuten.' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+      );
+    }
+  } catch (err) {
+    console.error('Rate-Limit übersprungen (Upstash nicht erreichbar):', err);
   }
 
   try {
